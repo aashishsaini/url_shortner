@@ -1,0 +1,9 @@
+<% 'Note*' if @url.errors.any?  %><% @url.errors.full_messages.each do |error_message| %>
+    <%= error_message %> <br />
+<% end %>
+
+<h2>Enter the url</h2>
+<%= form_for @url, url: shortend_urls_create_path, type: :post do %>
+    <%= text_field_tag 'original_url' %>
+    <%= submit_tag 'Submit' %>
+<% end %>
