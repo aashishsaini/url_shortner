@@ -1,0 +1,65 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  : MyString
+  address: MyString
+  : MyText
+  city: MyString
+  : MyString
+  state: MyString
+  : MyString
+  state_code: MyString
+  : MyString
+  country: MyString
+  : MyString
+  country_code: MyString
+  : MyString
+  postal_code: MyString
+  : MyString
+  metro_code: MyString
+  : MyString
+  ip: MyString
+  : MyString
+  coordinates: MyString
+  : MyString
+  latitude: MyString
+  : 9.99
+  longitude: MyString
+  : 9.99
+  province: MyString
+  : MyString
+  province_code: MyString
+  : MyString
+
+two:
+  name: MyString
+  : MyString
+  address: MyString
+  : MyText
+  city: MyString
+  : MyString
+  state: MyString
+  : MyString
+  state_code: MyString
+  : MyString
+  country: MyString
+  : MyString
+  country_code: MyString
+  : MyString
+  postal_code: MyString
+  : MyString
+  metro_code: MyString
+  : MyString
+  ip: MyString
+  : MyString
+  coordinates: MyString
+  : MyString
+  latitude: MyString
+  : 9.99
+  longitude: MyString
+  : 9.99
+  province: MyString
+  : MyString
+  province_code: MyString
+  : MyString
