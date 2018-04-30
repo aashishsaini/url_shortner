@@ -4,5 +4,4 @@ Rails.application.routes.draw do
   get 'shortend/:short_url', to: 'shortend_urls#shortend', as: :shortend
   post 'shortend_urls/create'
   get 'shortend_urls/create', to: 'shortend_urls#index'
-  get 'shortend_urls/fetch_original_url'
 end
