@@ -10,9 +10,15 @@ class ShortendUrlsController < ApplicationController
 
   # visit the shortend url or used to see the stats around shortend url in json and xml format
   def show
-    @url.add_user_details(request, true)
+    unless api_request?
+      @url.add_user_details(request, true)
+    else
+      result = params[:q] ? ShortendUrl.search_url(params[:q]) : [@url]
+    end
     respond_to do |format|
       format.html {redirect_to @url.sanitize_url and return} # response for normal http request
+      format.json {render json: ShortendUrl.serialize_response(result)} # response to api in json format
+      format.xml {render xml: ShortendUrl.serialize_xml_response(result)}# response to api in xml format
     end
   end
 
@@ -53,5 +59,10 @@ class ShortendUrlsController < ApplicationController
 
   def url_params
     params.require(:url).permit(:original_url)
+  end
+
+  # checks if the request is an api request or normal web request
+  def api_request?
+    request.format.json? || request.format.xml?
   end
 end
