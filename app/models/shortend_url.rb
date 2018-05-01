@@ -1,7 +1,6 @@
 class ShortendUrl < ActiveRecord::Base
   require 'mechanize'
 
-  UNIQUE_ID_LENGTH= 10
   validates :original_url, presence: true, on: :create
   validates_format_of :original_url, :with => URI::regexp(%w(http https))
   before_create :generate_short_url
