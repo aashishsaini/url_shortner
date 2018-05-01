@@ -1,11 +1,11 @@
 class ShortendUrl < ActiveRecord::Base
   require 'mechanize'
 
-  UNIQUE_ID_LENGTH= 10
   validates :original_url, presence: true, on: :create
   validates_format_of :original_url, :with => URI::regexp(%w(http https))
   before_create :generate_short_url
   before_create :sanitize
+  scope :unused_urls, ->{ where('hits = ? AND updated_at <= ?',0, 1.year.ago) }
 
   # adds the creator relationship for the url generator
   belongs_to :creator, :class_name => 'User'
@@ -182,23 +182,23 @@ class ShortendUrl < ActiveRecord::Base
   end
 
   # creates the error logger file for different type of external services
-  def my_logger(experiment='mechanize')
+  def my_logger(file_name='mechanize')
     # sets the log file path.
-    file_url = "#{Rails.root}/log/#{experiment}_error.log"
+    file_url = "#{Rails.root}/log/#{file_name}_error.log"
 
     # checks the existence of file
     # if not found then create it.
     unless File.exist?(file_url)
-      # creates a file #{experiment_name}_optimzely.log
+      # creates a file #{file_name}_error.log
       f = File.open(file_url, "a")
       f.close
     end
     begin
-      # tries to get the class distinct class variable for experiment.
-      container = ShortendUrl.class_variable_get(:"@@#{experiment}")
+      # tries to get the class distinct class variable for file_name.
+      container = ShortendUrl.class_variable_get(:"@@#{file_name}")
     rescue Exception => e
-      # inits the class variable for experiment for write operation.
-      container = ShortendUrl.class_variable_set(:"@@#{experiment}", Logger.new(file_url))
+      # inits the class variable for file_name for write operation.
+      container = ShortendUrl.class_variable_set(:"@@#{file_name}", Logger.new(file_url))
     end
     container
   end
