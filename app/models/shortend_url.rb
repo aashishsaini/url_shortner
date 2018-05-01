@@ -138,7 +138,7 @@ class ShortendUrl < ActiveRecord::Base
     if !q.nil? && !q['user'].present? && !q['shortend_url'].present?
 
       # extract the ShortendUrl columns to make a generic query
-      ShortendUrl.column_names.reject{|s| %w{created_at id updated_at creator_id}.include?(s)}.each_with_index do |column,i|
+      ShortendUrl.column_names.reject{|s| %w{created_at id updated_at creator_id hits}.include?(s)}.each_with_index do |column,i|
         generic_condition.push("#{column} #{Rails.env.production? ? 'I' : ''}LIKE ?")
         generic_condition_val.push("%#{q}%")
       end
