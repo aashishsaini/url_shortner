@@ -49,5 +49,14 @@ group :development, :test do
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+
+end
+
+group :test do
+  # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
+  # (saved instances, unsaved instances, attribute hashes, and stubbed objects), and support for multiple factories for the
+  # same class (user, admin_user, and so on), including factory inheritance.
+  gem 'factory_bot_rails'
+  gem "faker"
 end
 
