@@ -139,13 +139,13 @@ class ShortendUrl < ActiveRecord::Base
 
       # extract the ShortendUrl columns to make a generic query
       ShortendUrl.column_names.reject{|s| %w{created_at id updated_at creator_id}.include?(s)}.each_with_index do |column,i|
-        generic_condition.push("#{column} like ?")
+        generic_condition.push("#{column} #{Rails.env.production? ? 'I' : ''}LIKE ?")
         generic_condition_val.push("%#{q}%")
       end
 
       # extract the user columns to make a generic query
       User.column_names.reject{|s| %w{created_at id latitude longitude updated_at}.include?(s)}.each_with_index do |column, i|
-        generic_condition.push("users.#{column} like ?")
+        generic_condition.push("users.#{column} #{Rails.env.production? ? 'I' : ''}LIKE ?")
         generic_condition_val.push("%#{q}%")
       end
 
@@ -176,7 +176,7 @@ class ShortendUrl < ActiveRecord::Base
   # generic query builder
   def self.build_condition_arr(params ,condition_container, condition_value_container, join_table=nil)
     params.each do |k,v|
-      condition_container.push("#{join_table ? (join_table+'.') : ''} #{k} like ?")
+      condition_container.push("#{join_table ? (join_table+'.') : ''} #{k} #{Rails.env.production? ? 'I' : ''}LIKE ?")
       condition_value_container.push("%#{v}%")
     end
   end
