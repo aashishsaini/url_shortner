@@ -21,4 +21,8 @@ class ActiveSupport::TestCase
   def new_ip
     Faker::Internet.ip_v4_address
   end
+
+  def action_request(ip=nil)
+    ActionController::TestRequest.new('REMOTE_ADDR' => (ip || guest_user.ip))
+  end
 end

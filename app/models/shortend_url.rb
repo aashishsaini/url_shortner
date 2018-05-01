@@ -5,6 +5,7 @@ class ShortendUrl < ActiveRecord::Base
   validates_format_of :original_url, :with => URI::regexp(%w(http https))
   before_create :generate_short_url
   before_create :sanitize
+  scope :unused_urls, ->{ where(hits: 0) }
 
   # adds the creator relationship for the url generator
   belongs_to :creator, :class_name => 'User'

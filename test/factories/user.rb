@@ -9,7 +9,7 @@ FactoryBot.define do
     country_code Faker::Address.country_code
     postal_code Faker::Address.postcode
     metro_code Faker::Address.postcode
-    ip '0.0.0.0'
+    ip Faker::Internet.ip_v4_address
     coordinates [Faker::Address.latitude, Faker::Address.longitude]
     latitude Faker::Address.latitude
     longitude Faker::Address.longitude
