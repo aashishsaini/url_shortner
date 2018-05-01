@@ -152,7 +152,8 @@ Good if have RVM with ruby 2.2.5 available
 rake doc:app coverage is 57.69% documented.
 ```
 
-### Things needs to be improved
+## Things needs to be improved
+
 * Implement redis-cache to store the query and its result so as to reduce the response time.
 * Pull up the page category and other relevant information so that wide-en the query parameters.
 * Built up a UI query interface where user can build specific query among different attributes of both the tables.
@@ -162,3 +163,4 @@ rake doc:app coverage is 57.69% documented.
 * Add link to post the short url on social web application like FB or twitter. it should be similar to share with friend on Facebook.
 * Add User's dashboard to list all of his converted urls
 * Add URL's dashoboard to list all of the user who has accessed this URL.   
+
