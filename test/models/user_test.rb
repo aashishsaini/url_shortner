@@ -3,7 +3,7 @@ require 'test_helper'
 class UserTest < ActiveSupport::TestCase
   test "has or belongs to many shortend urls" do
     3.times do
-      shortend_url.add_user_details(ActionController::TestRequest.new)
+      shortend_url.add_user_details(action_request)
     end
     assert_equal guest_user.shortend_urls.count, 3
   end

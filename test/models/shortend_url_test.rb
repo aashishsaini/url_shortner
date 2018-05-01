@@ -28,7 +28,10 @@ class ShortendUrlTest < ActiveSupport::TestCase
   end
 
   test "returns the collection of unused urls if present" do
-    shortend_url
+    @url = create(:shortend_url)
+    @url.created_at = 1.year.ago
+    @url.updated_at = 1.year.ago
+    @url.save
     assert_equal ShortendUrl.unused_urls.count , 1
   end
 
