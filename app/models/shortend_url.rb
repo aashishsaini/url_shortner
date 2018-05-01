@@ -98,6 +98,81 @@ class ShortendUrl < ActiveRecord::Base
     end
   end
 
+  # used to serialize the response using the serializer so as to club the response in single object
+  def self.serialize_response(extracted_results)
+    url_info = []
+    extracted_results.each do |url|
+      url_info.push({url_info: ShortendUrlSerializer.new(url)})
+    end
+    return url_info
+  end
+
+  def self.serialize_xml_response(extracted_results)
+    url_info = []
+    extracted_results.each do |url|
+      url_info.push({url_info: url, creator: url.try(:creator), users: url.try(:users)})
+    end
+    return url_info
+  end
+
+  def self.search_url(q)
+    # sets the logical operators
+    shortend_url_operator = q['shortend_url_operator'] || 'OR'
+    user_operator = q['user_operator'] || 'OR'
+    global_operator = q['global_operator'] || 'AND'
+
+    # generic initialization
+    generic_condition, generic_condition_val,condition_user,condition_user_val,condition_shotend_url,condition_shotend_url_val = [],[],[],[],[],[]
+
+    # build conditions for user table
+    if q['user'].present?
+      build_condition_arr(q['user'], condition_user, condition_user_val, 'users')
+    end
+
+    # build conditions for shortend_url table
+    if q['shortend_url'].present?
+      build_condition_arr(q['shortend_url'], condition_shotend_url, condition_shotend_url_val)
+    end
+
+    # trying to fetch the records from user and shortend urls table if value present in any of table's attributes
+    if !q.nil? && !q['user'].present? && !q['shortend_url'].present?
+
+      # extract the ShortendUrl columns to make a generic query
+      ShortendUrl.column_names.reject{|s| %w{created_at id updated_at creator_id}.include?(s)}.each_with_index do |column,i|
+        generic_condition.push("#{column} LIKE CONCAT('%',?,'%')")
+        generic_condition_val.push(q)
+      end
+
+      # extract the user columns to make a generic query
+      User.column_names.reject{|s| %w{created_at id latitude longitude updated_at}.include?(s)}.each_with_index do |column, i|
+        generic_condition.push("users.#{column} LIKE CONCAT('%',?,'%')")
+        generic_condition_val.push(q)
+      end
+
+      # using splat operator to pass dynamic arguments to where condition
+      joins(:users).where(generic_condition.join(' OR '), *generic_condition_val)
+
+    # trying to query user table attributes
+    elsif q.present? && q['user'].present? && !q['shortend_url'].present?
+
+      # using splat operator to pass dynamic arguments to where condition
+      joins(:users).where(condition_user.join(" #{user_operator} "),*condition_user_val )
+
+    # trying to query shortend_url table attributes
+    elsif q.present? && !q['user'].present? && q['shortend_url'].present?
+
+      # using splat operator to pass dynamic arguments to where condition
+      joins(:users).where(condition_shotend_url.join(" #{shortend_url_operator} "),*condition_shotend_url_val)
+
+    # trying to fetch the records from user and shortend urls table by using OR on users attributes and
+    # OR on shortend_urls attributes with a union of AND between the two
+    elsif q.present? && q['user'].present? && q['shortend_url'].present?
+
+      # using splat operator to pass dynamic arguments to where condition
+      joins(:users).where((condition_user.join(" #{user_operator} ")) + " #{global_operator} "+ (condition_shotend_url.join(" #{shortend_url_operator} ")),*condition_user_val ,*condition_shotend_url_val )
+    end
+  end
+
   # generic query builder
   def self.build_condition_arr(params ,condition_container, condition_value_container, join_table=nil)
     params.each do |k,v|
